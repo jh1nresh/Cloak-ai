@@ -3,7 +3,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, ShieldCheck, ShoppingBag, Sparkles } from "lucide-react";
+import { ArrowRight, Search, ShieldCheck, ShoppingBag, Sparkles } from "lucide-react";
 import ProductCard from "@/components/drop/ProductCard";
 import type { DropProduct } from "@/lib/drop-products";
 
@@ -62,13 +62,13 @@ export default function DropStorefront({ products }: DropStorefrontProps) {
               Privacy
             </Link>
           </div>
-          <a
+          <Link
             className="inline-flex h-9 items-center justify-center gap-2 border border-primary bg-primary px-3 text-xs font-semibold text-white"
-            href="#gallery"
+            href="/login"
           >
-            <ShoppingBag size={15} aria-hidden="true" />
-            Checkout
-          </a>
+            <Sparkles size={15} aria-hidden="true" />
+            Create stylist
+          </Link>
         </nav>
       </header>
 
@@ -85,24 +85,33 @@ export default function DropStorefront({ products }: DropStorefrontProps) {
             </div>
             <div className="max-w-2xl">
               <h1 className="font-serif text-5xl leading-[0.95] text-primary sm:text-6xl lg:text-7xl">
-                Try the drop before you buy.
+                Your AI dressing room for the internet.
               </h1>
               <p className="mt-5 max-w-xl text-base leading-7 text-muted sm:text-lg">
-                Upload one photo. Preview the look. Checkout only when it feels right.
+                Keep yourself at the center, swipe outfits around you, and buy only when the look already feels like yours.
               </p>
+              <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+                <Link href="/login" className="btn-primary">
+                  Create my stylist
+                  <ArrowRight size={18} aria-hidden="true" />
+                </Link>
+                <Link href="/stylist" className="btn-outline">
+                  View dressing room
+                </Link>
+              </div>
             </div>
             <div className="grid gap-3 border-t border-line pt-4 text-sm text-muted sm:grid-cols-3">
               <div>
-                <p className="font-semibold text-primary">01 Browse</p>
-                <p className="mt-1">Filter a small women&apos;s fashion drop.</p>
+                <p className="font-semibold text-primary">01 Profile</p>
+                <p className="mt-1">Save style, colors, use cases, and fit priorities once.</p>
               </div>
               <div>
-                <p className="font-semibold text-primary">02 Preview</p>
-                <p className="mt-1">Upload a photo and generate a mock try-on.</p>
+                <p className="font-semibold text-primary">02 Dress</p>
+                <p className="mt-1">The center model stays you while the rack changes around it.</p>
               </div>
               <div>
-                <p className="font-semibold text-primary">03 Buy</p>
-                <p className="mt-1">Leave for Shopify only after the preview.</p>
+                <p className="font-semibold text-primary">03 Try / buy</p>
+                <p className="mt-1">Preview only the best candidates, then leave for Shopify.</p>
               </div>
             </div>
           </div>

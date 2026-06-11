@@ -1,13 +1,22 @@
 # Cloak AI
 
-Cloak AI is a Next.js V0 for a women’s fashion AI try-on drop storefront.
+Cloak AI is a Next.js V2 for a women’s AI dressing room + personal fashion agent.
 
-The goal is a campaign-style shopping page inspired by custom commerce drops: browse a small apparel collection, upload one photo, generate a demo try-on preview, compare the look, then leave for Shopify checkout.
+The goal is to stop making shoppers evaluate isolated product cards. Cloak keeps the user/model in the center, moves outfits around them, remembers a lightweight style profile, and turns the rack into `like / skip / buy` decisions.
 
-## What this V0 includes
+## What this V2 includes
 
+- AI dressing room at `/stylist`
+- Central “on you” model view using mock generated images
+- Previous/next side previews like a dressing-room mirror rail
+- `Like`, `Skip`, `Looks good — buy`, and rack reset actions
+- Browser-local reactions for liked/skipped looks
 - Women’s fashion drop homepage
 - Gallery-first product grid
+- Local-demo login / style onboarding at `/login`
+- Personal stylist dashboard at `/stylist`
+- Browser-local style profile storage
+- Rule-based recommendation ranking from the local catalog
 - Search and category filters
 - Product detail / try-on studio pages
 - Explicit photo upload and consent copy
@@ -16,11 +25,12 @@ The goal is a campaign-style shopping page inspired by custom commerce drops: br
 - Per-product Shopify checkout URL boundary
 - Lightweight privacy page
 
-## What this V0 does not include
+## What this V1 does not include
 
 - Real payment/order handling
 - Shopify Storefront API cart
-- Accounts/login
+- Real backend authentication or password storage
+- Real image/avatar persistence
 - Size recommendation
 - Wardrobe/history
 - Real AI provider credentials
@@ -52,7 +62,9 @@ PATH=/Users/jhinresh/.nvm/versions/node/v24.1.0/bin:$PATH npm run dev
 
 ## Useful routes
 
-- `/` — drop storefront gallery
+- `/` — personal stylist landing + drop storefront gallery
+- `/login` — local-demo login and style onboarding
+- `/stylist` — AI dressing room with central on-you model and like/skip/buy rail
 - `/products/satin-column-slip` — product try-on studio example
 - `/privacy` — upload consent and privacy copy
 - `/api/drop-tryon` — mock try-on API
@@ -104,13 +116,15 @@ Manual smoke test:
 
 1. Open `/`.
 2. Search/filter products.
-3. Open a product.
-4. Upload a photo.
-5. Check the consent box.
-6. Generate mock try-on.
-7. Confirm comparison panels render.
-8. Click `Buy with Shopify` and confirm it leaves Cloak.
+3. Open `/login`, enter a demo email, choose persona/colors/intents/fit guardrails, and create stylist.
+4. Confirm `/stylist` ranks recommendations and links to a product.
+5. Open a product.
+6. Upload a photo.
+7. Check the consent box.
+8. Generate mock try-on.
+9. Confirm comparison panels render.
+10. Click `Buy with Shopify` and confirm it leaves Cloak.
 
 ## Privacy boundary
 
-Cloak AI V0 only analyzes a photo the shopper explicitly uploads for this preview. The mock storefront does not persist uploads, create accounts, or process orders.
+Cloak AI V1 stores the style profile and demo login in browser localStorage and only analyzes a photo the shopper explicitly uploads for a preview. The mock storefront does not persist uploads, create backend accounts, or process orders.

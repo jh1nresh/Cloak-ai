@@ -9,13 +9,13 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Cloak - Try the Drop Before You Buy",
-  description: "Browse a women's fashion drop, upload one photo, preview the look, then leave for checkout.",
+  title: "Cloak AI - Your AI Dressing Room",
+  description: "Create a style profile, keep yourself in the center, swipe outfits around you, and buy the looks that work.",
   manifest: "/manifest.json",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "Cloak" },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "Cloak AI" },
   openGraph: {
-    title: "Cloak - Try the Drop Before You Buy",
-    description: "Upload one photo, preview the look, and checkout only when it feels right.",
+    title: "Cloak AI - Your AI Dressing Room",
+    description: "Cloak keeps you as the model while products from commerce catalogs turn into outfits around you.",
     type: "website",
   },
 };

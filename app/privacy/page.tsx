@@ -21,21 +21,20 @@ export default function PrivacyPage() {
             <p className="section-title">Privacy and consent</p>
           </div>
           <h1 className="mt-4 text-4xl font-semibold leading-tight">
-            Uploads are explicit and preview-scoped in this V0.
+            V1 keeps personalization explicit and local-demo scoped.
           </h1>
           <div className="mt-6 grid gap-4 text-sm leading-7 text-muted">
             <p>
-              Cloak&apos;s drop storefront uses uploaded photos only when the shopper
-              selects a file and presses generate. This V0 calls a mock preview provider,
-              so no paid AI provider receives the image from this storefront flow.
+              Cloak&apos;s style profile and demo login are stored in this browser&apos;s localStorage only. There is no password, account backend, session cookie, or third-party auth provider in this V1.
             </p>
             <p>
-              There is no account, cart, payment, or order persistence in the storefront.
-              Product checkout links leave Cloak and open a Shopify placeholder URL.
+              Cloak&apos;s drop storefront uses uploaded photos only when the shopper selects a file and presses generate. This V1 still calls a mock preview provider, so no paid AI provider receives the image from this storefront flow.
             </p>
             <p>
-              The generated preview is a demo comparison. It does not guarantee size,
-              body measurements, garment physics, or real-world fit.
+              There is no cart, payment, or order persistence in the storefront. Product checkout links leave Cloak and open a Shopify placeholder URL.
+            </p>
+            <p>
+              The generated preview and recommendations are demo comparisons. They do not guarantee size, body measurements, garment physics, or real-world fit.
             </p>
           </div>
           <Link href="/" className="btn-primary mt-7">

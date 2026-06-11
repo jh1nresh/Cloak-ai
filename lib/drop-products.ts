@@ -79,7 +79,7 @@ export const dropProducts: DropProduct[] = [
     garmentImageUrl:
       "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=900&q=80",
     mockResultImageUrl:
-      "https://images.unsplash.com/photo-1520975682031-ae0b8000c1b0?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&q=80",
     checkoutUrl: "https://cloak-demo.myshopify.com/cart/plum-bustier-top:1",
     tags: ["date night", "corset seam", "cropped"],
     fitNote: "Close fitted through the bodice with a cropped waistline.",
