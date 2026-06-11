@@ -37,6 +37,11 @@ export function recommendProducts(profile: StyleProfile, products: DropProduct[]
       const reasons: string[] = [];
       let score = 0;
 
+      if (product.tags.includes("imported")) {
+        score += 10;
+        reasons.push("You imported this into your personal rack");
+      }
+
       const categoryBoost = personaCategoryBoosts[profile.persona][product.category] || 0;
       if (categoryBoost) {
         score += categoryBoost;

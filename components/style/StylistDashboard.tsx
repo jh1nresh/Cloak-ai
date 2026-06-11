@@ -2,12 +2,13 @@
 /* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import {
   Check,
   ChevronLeft,
   ChevronRight,
   Heart,
+  Link as LinkIcon,
   LogOut,
   RotateCcw,
   ShoppingBag,
@@ -31,7 +32,29 @@ type StylistDashboardProps = {
 
 type DressingRoomReaction = Record<string, "liked" | "skipped">;
 
+type ImportFormState = {
+  title: string;
+  brand: string;
+  price: string;
+  color: string;
+  category: DropProduct["category"];
+  imageUrl: string;
+  checkoutUrl: string;
+};
+
 const REACTION_STORAGE_KEY = "cloak-ai-dressing-room-reactions";
+const IMPORTED_PRODUCTS_STORAGE_KEY = "cloak-ai-imported-products";
+const IMPORT_FALLBACK_IMAGE = "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1200&q=80";
+
+const defaultImportForm: ImportFormState = {
+  title: "",
+  brand: "Imported store",
+  price: "$",
+  color: "Imported",
+  category: "dress",
+  imageUrl: "",
+  checkoutUrl: "",
+};
 
 function readProfile() {
   if (typeof window === "undefined") return null;
@@ -44,6 +67,21 @@ function readProfile() {
   } catch {
     window.localStorage.removeItem(STYLE_PROFILE_STORAGE_KEY);
     return null;
+  }
+}
+
+function readImportedProducts() {
+  if (typeof window === "undefined") return [];
+
+  const raw = window.localStorage.getItem(IMPORTED_PRODUCTS_STORAGE_KEY);
+  if (!raw) return [];
+
+  try {
+    const parsed = JSON.parse(raw) as DropProduct[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    window.localStorage.removeItem(IMPORTED_PRODUCTS_STORAGE_KEY);
+    return [];
   }
 }
 
@@ -73,19 +111,25 @@ function createDemoProfile(): StyleProfile {
 export default function StylistDashboard({ products }: StylistDashboardProps) {
   const [profile, setProfile] = useState<StyleProfile>(() => createDemoProfile());
   const [reactions, setReactions] = useState<DressingRoomReaction>({});
+  const [importedProducts, setImportedProducts] = useState<DropProduct[]>([]);
+  const [importForm, setImportForm] = useState<ImportFormState>(() => defaultImportForm);
+  const [importError, setImportError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadBrowserState = window.setTimeout(() => {
       setProfile(readProfile() || createDemoProfile());
       setReactions(readReactions());
+      setImportedProducts(readImportedProducts());
     }, 0);
 
     return () => window.clearTimeout(loadBrowserState);
   }, []);
+  const rackProducts = useMemo(() => [...importedProducts, ...products], [importedProducts, products]);
+
   const recommendations = useMemo<Recommendation[]>(() => {
     if (!profile) return [];
-    return recommendProducts(profile, products);
-  }, [products, profile]);
+    return recommendProducts(profile, rackProducts);
+  }, [rackProducts, profile]);
   const visibleRecommendations = useMemo(
     () => recommendations.filter((item) => reactions[item.product.id] !== "skipped"),
     [reactions, recommendations]
@@ -117,6 +161,49 @@ export default function StylistDashboard({ products }: StylistDashboardProps) {
     window.localStorage.removeItem(REACTION_STORAGE_KEY);
     setProfile(createDemoProfile());
     setReactions({});
+  };
+
+  const saveImportedProducts = (nextProducts: DropProduct[]) => {
+    setImportedProducts(nextProducts);
+    window.localStorage.setItem(IMPORTED_PRODUCTS_STORAGE_KEY, JSON.stringify(nextProducts));
+  };
+
+  const importProduct = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const title = importForm.title.trim();
+    const checkoutUrl = importForm.checkoutUrl.trim();
+
+    if (!title) {
+      setImportError("Add a product name so Cloak can place it in your rack.");
+      return;
+    }
+
+    const safeCheckoutUrl = checkoutUrl || "https://cloak-demo.myshopify.com/cart/imported-product:1";
+    const imageUrl = importForm.imageUrl.trim() || IMPORT_FALLBACK_IMAGE;
+    const importedProduct: DropProduct = {
+      id: `imported-${Date.now()}`,
+      title,
+      brand: importForm.brand.trim() || "Imported store",
+      price: importForm.price.trim() || "Price TBD",
+      color: importForm.color.trim() || "Imported",
+      category: importForm.category,
+      imageUrl,
+      garmentImageUrl: imageUrl,
+      mockResultImageUrl: imageUrl,
+      checkoutUrl: safeCheckoutUrl,
+      tags: ["imported", "personal rack"],
+      fitNote: "Imported into your Cloak rack for a quick on-you vibe check before checkout.",
+    };
+
+    saveImportedProducts([importedProduct, ...importedProducts]);
+    setImportForm(defaultImportForm);
+    setImportError(null);
+    setActiveIndex(0);
+  };
+
+  const clearImportedProducts = () => {
+    saveImportedProducts([]);
+    setActiveIndex(0);
   };
 
   const heroName = profile.name || "You";
@@ -183,6 +270,7 @@ export default function StylistDashboard({ products }: StylistDashboardProps) {
             <ProfileLine label="Color lane" value={profile.colors.join(", ")} />
             <ProfileLine label="Fit guardrails" value={profile.fitPriorities.map((fit) => fitPriorityLabels[fit]).join(", ")} />
             <ProfileLine label="Reusable fit photo" value={profile.savedFitPhotoName || "Model slot pending"} />
+            <ProfileLine label="Imported pieces" value={`${importedProducts.length} in rack`} />
           </div>
           <div className="mt-5 grid grid-cols-2 gap-2 text-center text-sm">
             <div className="border border-white/10 bg-white/5 p-3">
@@ -201,6 +289,7 @@ export default function StylistDashboard({ products }: StylistDashboardProps) {
             <div>
               <p className="section-title">AI dressing room</p>
               <h2 className="mt-1 text-2xl font-semibold">Every piece is modeled by you.</h2>
+              <p className="mt-1 text-xs text-muted">Seed catalog + anything you import into Cloak.</p>
             </div>
             <span className="hidden border border-[#781f38] bg-[#781f38] px-2 py-1 text-[11px] font-semibold uppercase text-white sm:inline-flex">
               mock on-you rack
@@ -299,18 +388,92 @@ export default function StylistDashboard({ products }: StylistDashboardProps) {
             </ul>
           </div>
 
+          <form className="border border-line bg-panel p-4" onSubmit={importProduct}>
+            <div className="flex items-center gap-2">
+              <LinkIcon size={17} aria-hidden="true" />
+              <p className="section-title">Import product</p>
+            </div>
+            <p className="mt-2 text-sm leading-6 text-muted">
+              Paste a product manually for now. Cloak pulls it into your personal rack and treats the product image as the mock on-you preview.
+            </p>
+            <div className="mt-4 grid gap-2">
+              <input
+                className="input"
+                value={importForm.title}
+                onChange={(event) => setImportForm((current) => ({ ...current, title: event.target.value }))}
+                placeholder="Product name"
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  className="input"
+                  value={importForm.brand}
+                  onChange={(event) => setImportForm((current) => ({ ...current, brand: event.target.value }))}
+                  placeholder="Brand"
+                />
+                <input
+                  className="input"
+                  value={importForm.price}
+                  onChange={(event) => setImportForm((current) => ({ ...current, price: event.target.value }))}
+                  placeholder="Price"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  className="input"
+                  value={importForm.color}
+                  onChange={(event) => setImportForm((current) => ({ ...current, color: event.target.value }))}
+                  placeholder="Color"
+                />
+                <select
+                  className="input"
+                  value={importForm.category}
+                  onChange={(event) =>
+                    setImportForm((current) => ({ ...current, category: event.target.value as DropProduct["category"] }))
+                  }
+                >
+                  <option value="dress">Dress</option>
+                  <option value="top">Top</option>
+                  <option value="jacket">Jacket</option>
+                  <option value="skirt">Skirt</option>
+                  <option value="set">Set</option>
+                </select>
+              </div>
+              <input
+                className="input"
+                value={importForm.imageUrl}
+                onChange={(event) => setImportForm((current) => ({ ...current, imageUrl: event.target.value }))}
+                placeholder="Image URL optional"
+              />
+              <input
+                className="input"
+                value={importForm.checkoutUrl}
+                onChange={(event) => setImportForm((current) => ({ ...current, checkoutUrl: event.target.value }))}
+                placeholder="Checkout/product URL optional"
+              />
+              {importError ? <p className="border border-[#b42318] bg-[#fff7f6] p-2 text-xs font-semibold text-[#8a1f15]">{importError}</p> : null}
+              <button type="submit" className="btn-primary w-full">
+                Add to my rack
+              </button>
+            </div>
+          </form>
+
           <div className="border border-line bg-panel p-4">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="section-title">Dressing rail</p>
                 <h3 className="mt-1 text-xl font-semibold">Tap any look</h3>
               </div>
-              <button type="button" className="btn-outline h-9 px-3 text-xs" onClick={clearReactions}>
-                Reset
-              </button>
+              <div className="flex gap-2">
+                <button type="button" className="btn-outline h-9 px-3 text-xs" onClick={clearImportedProducts}>
+                  Clear imports
+                </button>
+                <button type="button" className="btn-outline h-9 px-3 text-xs" onClick={clearReactions}>
+                  Reset
+                </button>
+              </div>
             </div>
             <div className="mt-4 grid max-h-[520px] gap-2 overflow-y-auto pr-1">
-              {visibleRecommendations.slice(0, 10).map((item, index) => {
+              {visibleRecommendations.slice(0, 12).map((item, index) => {
                 const isActive = item.product.id === activeProduct.id;
                 const reaction = reactions[item.product.id];
                 return (
@@ -332,6 +495,11 @@ export default function StylistDashboard({ products }: StylistDashboardProps) {
                       <span className="mt-1 block text-xs text-muted">
                         {item.product.color} · {item.product.price}
                       </span>
+                      {item.product.id.startsWith("imported-") ? (
+                        <span className="mt-2 inline-flex bg-[#221d1b] px-2 py-1 text-[10px] font-semibold uppercase text-white">
+                          imported
+                        </span>
+                      ) : null}
                       {reaction === "liked" ? (
                         <span className="mt-2 inline-flex bg-[#e4516f] px-2 py-1 text-[10px] font-semibold uppercase text-white">
                           liked

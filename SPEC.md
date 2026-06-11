@@ -38,7 +38,9 @@ The core product feeling should be: “I am standing in a digital dressing room,
 - Central on-you mirror using `mockResultImageUrl`.
 - Previous/next side previews.
 - Scrollable dressing rail.
-- Like / skip / buy / reset interactions.
+- Manual product import from `/stylist`.
+- Browser-local imported product rack storage.
+- Imported products merge into the same ranked dressing rail.
 - Browser-local profile and reaction storage.
 - Existing gallery, product pages, mock try-on API, privacy page, and Shopify checkout boundary.
 
@@ -46,7 +48,7 @@ The core product feeling should be: “I am standing in a digital dressing room,
 
 - Real backend auth/passwords/sessions.
 - Real personal model image persistence.
-- Real Shopify Storefront API or external catalog ingestion.
+- Real Shopify Storefront API or automated external catalog ingestion.
 - Real AI try-on provider.
 - Size/fit guarantee.
 - Closet/wardrobe history.
@@ -81,7 +83,7 @@ Verification: lint, typecheck, production build, npm audit, browser smoke of `/`
 ## Follow-Up After V2
 
 1. Add `/model` for real reusable model creation, deletion, and consent.
-2. Add `/import` for product URL / screenshot / Shopify product import.
-3. Add `/rack` or merge imported products into `/stylist` dressing room.
-4. Generate/cached on-you previews only for top-ranked products.
-5. Connect real try-on provider behind explicit privacy and cost controls.
+2. Upgrade manual import into product URL extraction / screenshot ingestion / Shopify product import.
+3. Generate/cached on-you previews only for top-ranked imported + seed products.
+4. Connect real try-on provider behind explicit privacy and cost controls.
+5. Add backend auth/storage only after the local dressing-room loop proves useful.

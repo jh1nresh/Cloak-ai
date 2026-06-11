@@ -21,14 +21,14 @@ export default function PrivacyPage() {
             <p className="section-title">Privacy and consent</p>
           </div>
           <h1 className="mt-4 text-4xl font-semibold leading-tight">
-            V1 keeps personalization explicit and local-demo scoped.
+            V2 keeps personalization explicit and local-demo scoped.
           </h1>
           <div className="mt-6 grid gap-4 text-sm leading-7 text-muted">
             <p>
-              Cloak&apos;s style profile and demo login are stored in this browser&apos;s localStorage only. There is no password, account backend, session cookie, or third-party auth provider in this V1.
+              Cloak&apos;s style profile, imported product rack, and demo login are stored in this browser&apos;s localStorage only. There is no password, account backend, session cookie, or third-party auth provider in this V2.
             </p>
             <p>
-              Cloak&apos;s drop storefront uses uploaded photos only when the shopper selects a file and presses generate. This V1 still calls a mock preview provider, so no paid AI provider receives the image from this storefront flow.
+              Cloak&apos;s drop storefront uses uploaded photos only when the shopper selects a file and presses generate. This V2 still calls a mock preview provider, so no paid AI provider receives the image from this storefront flow.
             </p>
             <p>
               There is no cart, payment, or order persistence in the storefront. Product checkout links leave Cloak and open a Shopify placeholder URL.
